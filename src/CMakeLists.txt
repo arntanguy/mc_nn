@@ -40,7 +40,6 @@ install(FILES
   DESTINATION "${MC_NN_PREFIX}/include/mc_nn")
 
 # ---- ONNX Runtime (local vendored copy) ----
-set(ONNXRUNTIME_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime)
 set(ONNXRUNTIME_INCLUDE_DIR ${ONNXRUNTIME_ROOT}/include)
 set(ONNXRUNTIME_LIB_DIR ${ONNXRUNTIME_ROOT}/lib)
 
@@ -51,7 +50,7 @@ find_library(ONNXRUNTIME_LIB
   REQUIRED
 )
 
-if(ONNXRUNTIME_LIB)
+if(USE_BUNDLED_ONNXRUNTIME AND ONNXRUNTIME_LIB)
   # Installed: mc_nnConfig.cmake defines mc_nn::onnxruntime from the installed library.
   target_link_libraries(${PROJECT_NAME}
     PUBLIC

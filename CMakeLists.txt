@@ -9,6 +9,11 @@ set(PROJECT_URL "")
 
 project(${PROJECT_NAME} CXX)
 
+###########
+# OPTIONS #
+###########
+set(ONNXRUNTIME_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime" CACHE PATH "Path to ONNX Runtime root directory")
+
 # Check if the project is built inside mc_rtc
 if(NOT TARGET mc_rtc::mc_control)
   find_package(mc_rtc REQUIRED)

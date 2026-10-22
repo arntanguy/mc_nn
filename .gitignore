@@ -9,3 +9,6 @@ CMakeFiles/
 imgui.ini
 **/__tmp__*
 **/__pycache__/
+result
+build
+.direnv/
