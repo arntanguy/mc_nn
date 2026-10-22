@@ -39,10 +39,10 @@
             mc-nn = {
               src = lib.cleanSource ./.;
             };
+            onnxruntime = { };
           };
-          packages =
-          {
-            mc-nn = 
+          packages = {
+            mc-nn =
               {
                 stdenv,
                 mkMcRtcController,
@@ -73,6 +73,7 @@
 
                 cmakeFlags = [
                   "-DONNXRUNTIME_ROOT=${onnxruntime}"
+                  "-DUSE_BUNDLED_ONNXRUNTIME=OFF"
                   "-DINSTALL_DOCUMENTATION=OFF"
                   "-DMC_RTC_HONOR_INSTALL_PREFIX=ON"
                 ];

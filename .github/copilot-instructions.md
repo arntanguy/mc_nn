@@ -29,6 +29,30 @@
 - To use a separately installed ONNX Runtime, configure with `-DONNXRUNTIME_ROOT=/path/to/onnxruntime`.
 - There are no CTest targets, unit-test sources, or linter configuration in this repository, so no single-test command exists. Validate C++ changes with the narrowest affected CMake target, for example `cmake --build build --target MCNN`, `RunNN`, or `mcnn_contract_RandomPolicyContract`.
 
+## Code formatting
+
+Formatting is done using:
+
+- For Nix code (flake.nix)
+
+  ```
+  nix fmt
+  ```
+
+- For all other code (cmake, cpp, etc):
+
+  - If `prek` is available:
+
+  ```
+  prek run --all-files
+  ```
+
+  - Otherwise, use `pre-commit` from `pip`:
+
+  ```
+  pre-commit run --all-files
+  ```
+
 ## Architecture
 
 - `libMCNN.so` is the shared core (`src/mc_nn/`): `MCNNModel` wraps ONNX Runtime, `MCNNContract` and `MCNN` define policy interfaces, and `MCNNRegistry` discovers factories.
