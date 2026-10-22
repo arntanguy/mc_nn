@@ -59,4 +59,3 @@ jobs:
         with:
           allowed-skips: fallback
           jobs: ${{ toJSON(needs) }}
-

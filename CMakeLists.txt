@@ -53,6 +53,7 @@ install(
     FILES
         "${CMAKE_CURRENT_BINARY_DIR}/mc_nnConfig.cmake"
         cmake/MCNNContract.cmake
+        cmake/onnxruntimeConfig.cmake
     DESTINATION "${MC_NN_CMAKE_DIR}"
 )
 

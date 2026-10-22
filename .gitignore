@@ -1,4 +1,4 @@
-build/
+build*
 devel/
 install/
 log/
@@ -10,5 +10,5 @@ imgui.ini
 **/__tmp__*
 **/__pycache__/
 result
-build
 .direnv/
+.superbuild/

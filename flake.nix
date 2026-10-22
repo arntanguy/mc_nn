@@ -35,6 +35,8 @@
       {
         mc-rtc-nix.overlays.ccache = inputs.ccache-trigger.value;
         flakoboros = {
+          extraPackages = [ "ninja" ];
+
           overrideAttrs = {
             mc-nn = {
               src = lib.cleanSource ./.;
@@ -52,6 +54,7 @@
                 mc-rtc,
                 jrl-cmakemodules,
                 onnxruntime,
+                ninja,
               }:
               mkMcRtcController {
                 pname = "mc-nn";
@@ -65,13 +68,17 @@
                 };
 
                 buildInputs = [ jrl-cmakemodules ];
-                nativeBuildInputs = [ cmake ];
+                nativeBuildInputs = [
+                  cmake
+                  ninja
+                ];
                 propagatedBuildInputs = [
                   mc-rtc
                   onnxruntime
                 ];
 
                 cmakeFlags = [
+                  "-GNinja"
                   "-DONNXRUNTIME_ROOT=${onnxruntime}"
                   "-DUSE_BUNDLED_ONNXRUNTIME=OFF"
                   "-DINSTALL_DOCUMENTATION=OFF"
@@ -88,7 +95,7 @@
                   ];
                   controller = {
                     Enabled = "MCNN";
-                    # MainRobot = "JVRC1";
+                    MainRobot = "JVRC1";
                     # Timestep = 0.002;
                   };
                   robots = [

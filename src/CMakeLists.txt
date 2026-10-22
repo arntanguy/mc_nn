@@ -15,6 +15,8 @@ set(controller_HDR
     mc_nn/MCNNRegistry.h
 )
 
+include("${PROJECT_SOURCE_DIR}/cmake/onnxruntimeConfig.cmake")
+
 # libMCNN.so is the mc_nn core: contract base class, ONNX model, registry and
 # host-controller hooks. Contracts are separate libraries (contracts/*) linked
 # against it and loaded at runtime by the registry. The RunNN state links
@@ -29,7 +31,7 @@ target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC mc_rtc::mc_control_fsm ${CMAKE_DL_LIBS}
 )
-if(USE_BUNDLED_ONNXRUNTIME)
+if(MC_NN_ONNXRUNTIME_BUNDLED)
     # Find the vendored libonnxruntime next to libMCNN without LD_LIBRARY_PATH.
     set_property(
         TARGET ${PROJECT_NAME}
@@ -55,64 +57,14 @@ install(
     DESTINATION "${MC_NN_PREFIX}/include/mc_nn"
 )
 
-# ---- ONNX Runtime ----
-find_path(
-    ONNXRUNTIME_INCLUDE_DIR
-    NAMES onnxruntime_cxx_api.h
-    HINTS "${ONNXRUNTIME_ROOT}/include"
-    REQUIRED
-)
-
-find_library(
-    ONNXRUNTIME_LIB
-    NAMES onnxruntime
-    PATHS "${ONNXRUNTIME_ROOT}/lib"
-    NO_DEFAULT_PATH
-    REQUIRED
-)
-
-target_link_libraries(
-    ${PROJECT_NAME}
-    PUBLIC
-        $<BUILD_INTERFACE:${ONNXRUNTIME_LIB}>
-        $<INSTALL_INTERFACE:mc_nn::onnxruntime>
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC mc_nn::onnxruntime)
 
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<BUILD_INTERFACE:${ONNXRUNTIME_INCLUDE_DIR}>
         $<INSTALL_INTERFACE:include>
 )
-
-if(USE_BUNDLED_ONNXRUNTIME)
-    target_include_directories(
-        ${PROJECT_NAME}
-        PUBLIC $<INSTALL_INTERFACE:include/mc_nn/onnxruntime>
-    )
-    install(
-        DIRECTORY "${ONNXRUNTIME_INCLUDE_DIR}/"
-        DESTINATION "${MC_NN_PREFIX}/include/mc_nn/onnxruntime"
-    )
-
-    # Install the runtime shared libraries alongside the project libs
-    install(
-        DIRECTORY "${ONNXRUNTIME_ROOT}/lib/"
-        DESTINATION ${MC_RTC_LIBDIR}
-        FILES_MATCHING
-        PATTERN "libonnxruntime*.so*"
-    )
-
-    set(MC_NN_ONNXRUNTIME_LOCATION "\${MC_NN_LIBDIR}/libonnxruntime.so")
-    set(MC_NN_ONNXRUNTIME_INCLUDE_DIR
-        "\${MC_NN_PREFIX}/include/mc_nn/onnxruntime"
-    )
-else()
-    message(STATUS "Using external ONNX Runtime from ${ONNXRUNTIME_ROOT}")
-    set(MC_NN_ONNXRUNTIME_LOCATION "${ONNXRUNTIME_LIB}")
-    set(MC_NN_ONNXRUNTIME_INCLUDE_DIR "${ONNXRUNTIME_INCLUDE_DIR}")
-endif()
 
 set(MC_NN_ONNXRUNTIME_LOCATION "${MC_NN_ONNXRUNTIME_LOCATION}" PARENT_SCOPE)
 set(MC_NN_ONNXRUNTIME_INCLUDE_DIR
