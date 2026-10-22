@@ -31,8 +31,9 @@ set(AROBASE "@")
 set(POLICIES_DIR "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/policies")
 # Where contract libraries are installed and loaded from at runtime
 set(MC_NN_CONTRACTS_DIR "${MC_RTC_LIBDIR}/mc_nn_contracts")
-# Installation prefix of libMCNN, its headers and its CMake package
-get_filename_component(MC_NN_PREFIX "${MC_RTC_LIBDIR}" DIRECTORY)
+# Installation prefix of libMCNN's public headers. Do not infer this from
+# MC_RTC_LIBDIR: on multiarch systems that directory is /lib/<triplet>.
+set(MC_NN_PREFIX "${CMAKE_INSTALL_PREFIX}")
 set(MC_NN_LIBDIR "${MC_RTC_LIBDIR}")
 
 include(cmake/MCNNContract.cmake)
