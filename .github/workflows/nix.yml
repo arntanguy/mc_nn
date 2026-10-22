@@ -60,6 +60,16 @@ jobs:
           sudo ls -ld /var/cache/ccache
       - run: nix flake check -L ${{ steps.flags.outputs.args }}
       - run: nix build -L ${{ steps.flags.outputs.args }}
+      - run: nix build -L --no-write-lock-file ./.github/workflows/test-standalone
+      - if: runner.os == 'Linux'
+        name: Check consumer runtime dependencies
+        run: |
+          set -euo pipefail
+          ldd_output="$(ldd -r result/bin/mcnn-consumer)"
+          printf '%s\n' "$ldd_output"
+          if grep -Eq 'not found|undefined symbol' <<< "$ldd_output"; then
+            exit 1
+          fi
   check:
     if: always()
     name: check-macos-linux-nix

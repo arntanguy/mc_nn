@@ -39,7 +39,7 @@ jobs:
       with:
         compiler: ${{ matrix.compiler }}
         build-type: ${{ matrix.build-type }}
-    - name: Check usage
+    - name: "[test-standalone] Check consumer usage"
       shell: bash
       run: |
         set -x
@@ -47,6 +47,11 @@ jobs:
         mkdir build && cd build
         cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
         cmake --build . --config ${{ matrix.build-type }}
+        ldd_output="$(ldd -r ./mcnn-consumer)"
+        printf '%s\n' "$ldd_output"
+        if grep -Eq 'not found|undefined symbol' <<< "$ldd_output"; then
+          exit 1
+        fi
         ctest -V -C ${{ matrix.build-type }}
   check:
     if: always()
